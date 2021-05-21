@@ -49,7 +49,7 @@ m_agt_cfg.is_active = UVM_ACTIVE;
 m_cfg.m_agt_cfg = m_agt_cfg;
 //m_cfg.has_agent = has_agent;
 
-uvm_config_db #(seq_env_config)::set(this,"*","env_config",m_cfg)
+uvm_config_db #(seq_env_config)::set(this,"*","env_config",m_cfg);
 tb = seq_tb::type_id::create("tb",this);
 
 endfunction

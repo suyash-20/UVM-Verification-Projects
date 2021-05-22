@@ -92,7 +92,7 @@ function void  write_xtn::do_print (uvm_printer printer);
     foreach(payload[i])
         printer.print_field( $sformatf("payload[%0d]",i), this.payload[i], 8, UVM_DEC);
 
-	printer.print_field( "parity", 				this.parity,	 	        8,		 	UVM_DEC			);
+	printer.print_field( "parity", this.parity, 8, UVM_DEC);
    
 endfunction
 

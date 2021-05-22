@@ -1,8 +1,8 @@
-//class extension
+//------------------------------------------
+// CLASS DESCRIPTION
+//------------------------------------------
 
 class router_scoreboard extends uvm_scoreboard;
-
-//factory registration
 
 `uvm_component_utils(router_scoreboard)
 
@@ -11,11 +11,9 @@ uvm_tlm_analysis_fifo#(read_xtn)fifo_rdh[];
 uvm_tlm_analysis_fifo#(write_xtn)fifo_wrh;
 
 //ENV config handle
-
 router_env_config m_cfg;
 
-//declaring variavles for scoreboard operations
-
+//declaring variables for scoreboard operations
 int wr_xtns, rd_xtns, xtns_compared, xtns_dropped;
 
 //declaring an associative array for reference model
@@ -23,23 +21,21 @@ int wr_xtns, rd_xtns, xtns_compared, xtns_dropped;
 
 //declaring handles for read_xtn and write)xtn classes to store the fifo data
 write_xtn wr_data;
-read_xtn rd_data;  //DYNAMIC OR NOT????????????
+read_xtn rd_data;
 
 
 //handle declaration for coverage models
 write_xtn wr_cov;
 read_xtn rd_cov;
 
-//------------------------
-
-//covergroup logic----//--------------------
+//------------------------ covergroup logic --------------------//
 covergroup router_wcov with function sample(bit[7:0] payload);
 option.per_instance = 1;
+
 
 //-----------------WRITE OPERATION COVERAGE SECTION
 
 //HEADER
-
 HEADER: coverpoint wr_cov.header[1:0]{
 	bins low = {0};
 	bins mid2 = {1};
@@ -54,7 +50,6 @@ HEADER1: coverpoint wr_cov.header[7:2]{
 }
 
 //PAYLOAD 
-
 PAYLOAD : coverpoint payload{
 	bins low = {[0:50]};
 	bins mid2 = {[101:150]};
@@ -67,13 +62,10 @@ endgroup
 
 //------------------READ OPERATION COVERAGE SECTION
 
-
 covergroup router_rcov with function sample(bit[7:0] payload);
 option.per_instance = 1;
 
 //HEADER
-
-
 HEADER: coverpoint rd_cov.header[1:0]{
 	bins low = {0};
 	bins mid2 = {1};
@@ -89,7 +81,6 @@ HEADER1: coverpoint rd_cov.header[7:2]{
 
 
 //PAYLOAD 
-
 PAYLOAD : coverpoint payload{
 	bins low = {[0:50]};
 	bins mid2 = {[101:150]};
@@ -99,20 +90,16 @@ PAYLOAD : coverpoint payload{
 	}
 
 //READ_ENB SIGNAL
-
 READ_ENB : coverpoint rd_cov.read_enb{
 bins read_bin = {1};
 }	
 
-
 endgroup
 
 
-//---------------------------
-
-
-
-//Declaring standard methods
+//------------------------------------------
+// Methods
+//------------------------------------------
 
 extern function new(string name, uvm_component parent);
 extern function void build_phase(uvm_phase phase);
@@ -125,25 +112,18 @@ extern function void check_phase(uvm_phase phase);
 endclass
 
 
-//Constructor new() method
+//-----------------  constructor new method  -------------------//
 
 function router_scoreboard::new(string name, uvm_component parent);
 super.new(name, parent);
 
-//creating instances for read fifo and write fifo with new method??????  OR MAYBE IN BUILD PHASE ITSELF
-
 //creating instance for coverage paramters
-
 router_wcov = new();
 router_rcov = new();
 
 endfunction
 
-
-//------------
-
-
-//Build Phase--------------
+//-----------------  build() phase method  -------------------//
 
 function void router_scoreboard::build_phase(uvm_phase phase);
 super.build_phase(phase);
@@ -162,7 +142,7 @@ fifo_rdh[i]= new($sformatf("fifo_rdh[%0d]",i),this);
 endfunction
 
 
-//Run Phase----------------------
+//-----------------  Run phase method  -------------------//
 
 task router_scoreboard::run_phase(uvm_phase phase);
 forever
@@ -191,10 +171,11 @@ end
 end
 
 endtask
-//Check Data Task------------------
+
+
+//-----------------  check_data task  -------------------//
 
 task router_scoreboard::check_data(write_xtn wr, read_xtn rd);
-
 
 if(wr.header == rd.header)
 	begin
@@ -220,17 +201,12 @@ else
 endtask
 
 
-
-//CHECK PHASE FUNCTION
+//-----------------  Check phase method  -------------------//
 
 function void router_scoreboard::check_phase(uvm_phase phase);
-
 super.check_phase(phase);
 
-
-
 if(rd_data != null)
-
 begin
 	if(wr_data.header == rd_data.header)
 		begin
@@ -255,7 +231,6 @@ begin
 end
 
 else
-
 `uvm_fatal("SCOREBOARD","TIME OUT CONDITION _________________________-")
 
 
